@@ -15,8 +15,9 @@ import {
   ScrollView
 } from 'react-native'
 import request from 'superagent'
+import Header from './iosComponents/Header'
+import Comic from './iosComponents/Comic'
 
-const arr = [1,2,32,3,234,23,423,4,234]
 const API_ROOT = 'http://139.59.6.112:9021/'
 
 class reactNativeXkcdReader extends Component {
@@ -25,8 +26,7 @@ class reactNativeXkcdReader extends Component {
     this.state = {
       comics: [],
       comicIndex: 0,
-      loading: false,
-      searchResult: []
+      loading: false
     }
   }
 
@@ -72,16 +72,10 @@ class reactNativeXkcdReader extends Component {
   }
 
   render() {
-    const { comics, loading, searchResult } = this.state
+    const { comics } = this.state
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={{ flex: 1 }} />
-          <Text style={styles.title}>
-            xkcdReader
-          </Text>
-          <View style={{ flex: 1 }} />
-        </View>
+        <Header />
         <ScrollView
           style={styles.content}
           onScroll={e => this.onScrollHandler(e)}
@@ -92,18 +86,7 @@ class reactNativeXkcdReader extends Component {
           >
           {
             comics.map((d, key) => (
-              <View key={key} style= {{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                  {d.title}
-                </Text>
-                <View style={{ flexDirection: 'row', height: 400 }}>
-                  <Image
-                    resizeMode='contain'
-                    source={{ uri: d.img }}
-                    style={{ flex: 1, height: undefined, marginLeft: 10, marginRight: 10 }}
-                  />
-                </View>
-              </View>
+              <Comic title={d.title} img={d.img} key={key} />
             ))
           }
           </View>
@@ -115,20 +98,6 @@ class reactNativeXkcdReader extends Component {
 
 const width = Dimensions.get('window').width
 const styles = StyleSheet.create({
-  header: {
-    marginTop: 20,
-    backgroundColor: 'skyblue',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom: 5,
-    fontSize: 36,
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -138,9 +107,7 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 20,
     width: width
-  },
-  comicLine: {
-  },
+  }
 })
 
 AppRegistry.registerComponent('reactNativeXkcdReader', () => reactNativeXkcdReader)
