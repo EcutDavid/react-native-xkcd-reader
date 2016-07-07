@@ -8,7 +8,6 @@ import React, { Component } from 'react'
 import {
   AppRegistry,
   Dimensions,
-  Image,
   StyleSheet,
   Text,
   View,
