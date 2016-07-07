@@ -16,6 +16,7 @@ import {
 import request from 'superagent'
 import Header from './iosComponents/Header'
 import Comic from './iosComponents/Comic'
+import SearchBar from './iosComponents/SearchBar'
 
 const API_ROOT = 'http://139.59.6.112:9021/'
 
@@ -25,7 +26,8 @@ class reactNativeXkcdReader extends Component {
     this.state = {
       comics: [],
       comicIndex: 0,
-      loading: false
+      loading: false,
+      searchResult: []
     }
   }
 
@@ -70,11 +72,34 @@ class reactNativeXkcdReader extends Component {
     }
   }
 
+  onSearch(text) {
+    if (text === '') {
+      return
+    }
+    this.setState({ loading: true })
+    request
+      .get(`${API_ROOT}search/${text}`)
+      .end((err, res) => {
+        this.setState({ loading: false })
+        if (!err) {
+          let newComics = JSON.parse(res.text)
+          newComics = newComics.map(d => {
+            d.isSearchRes = true
+            return d
+          })
+          this.setState({ searchResult: newComics })
+        } else {
+          console.error(err)
+        }
+      })
+  }
+
   render() {
-    const { comics } = this.state
+    const { comics, loading, searchResult } = this.state
     return (
       <View style={styles.container}>
         <Header />
+        <SearchBar loading={loading} onSearch={text => this.onSearch(text)}/>
         <ScrollView
           style={styles.content}
           onScroll={e => this.onScrollHandler(e)}
@@ -84,8 +109,13 @@ class reactNativeXkcdReader extends Component {
             style= {{ alignItems: 'center' }}
           >
           {
-            comics.map((d, key) => (
-              <Comic title={d.title} img={d.img} key={key} />
+            searchResult.concat(comics).map((d, key) => (
+              <Comic
+                fromSearch={d.isSearchRes}
+                key={key}
+                img={d.img}
+                title={d.title}
+              />
             ))
           }
           </View>

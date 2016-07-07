@@ -8,13 +8,14 @@ import {
 
 export default class Comic extends Component {
   render() {
-    const { title, img } = this.props
+    const { title, img, fromSearch } = this.props
 
     return (
       <View style= {styles.container}>
         <Text style={styles.title}>
           {title}
         </Text>
+        { fromSearch && <Text>Came from search</Text> }
         <View style={styles.imgArea}>
           <Image
             resizeMode='contain'
