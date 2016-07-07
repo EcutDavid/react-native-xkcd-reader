@@ -1,6 +1,6 @@
 # react-native-xkcdReader
 
-![xkcd](https://cloud.githubusercontent.com/assets/10692276/16621416/bbae354e-43c8-11e6-9297-266a9a6025cd.gif)
+![xkcd](https://cloud.githubusercontent.com/assets/10692276/16654812/12230172-448a-11e6-952c-69c0fe86a8e8.gif)
 
 [Web page](http://davidguan.me/xkcdReader/) version of this comics reader
 
