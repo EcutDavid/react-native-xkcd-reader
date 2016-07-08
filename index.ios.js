@@ -13,7 +13,6 @@ import {
   View,
   ScrollView
 } from 'react-native'
-import request from 'superagent'
 import Header from './iosComponents/Header'
 import Comic from './iosComponents/Comic'
 import SearchBar from './iosComponents/SearchBar'
@@ -36,22 +35,22 @@ class reactNativeXkcdReader extends Component {
       return
     }
     this.inFetching = true
-    request
-      .get(`${API_ROOT}${index}`)
-      .end((err, res) => {
+    fetch(`${API_ROOT}${index}`)
+      .then((response) => response.text())
+      .then(newComics => {
         this.inFetching = false
-        if (!err) {
-          const { comics } = this.state
-          const newComics = JSON.parse(res.text)
-          if (comics.every(d => d.title != newComics[0].title)) {
-            this.setState({ comics: comics.concat(newComics) })
-          }
+        const { comics } = this.state
+        const isNewComics = comics.every(d => d.title != newComics[0].title)
+        if (isNewComics) {
+          this.setState({ comics: comics.concat(JSON.parse(newComics)) })
           if (incComicIndex) {
             this.setState({ comicIndex: index })
           }
-        } else {
-          console.error(err)
         }
+      })
+      .catch((error) => {
+        this.inFetching = false
+        console.log(error);
       })
   }
 
@@ -77,21 +76,16 @@ class reactNativeXkcdReader extends Component {
       return
     }
     this.setState({ loading: true })
-    request
-      .get(`${API_ROOT}search/${text}`)
-      .end((err, res) => {
-        this.setState({ loading: false })
-        if (!err) {
-          let newComics = JSON.parse(res.text)
-          newComics = newComics.map(d => {
-            d.isSearchRes = true
-            return d
-          })
-          this.setState({ searchResult: newComics })
-        } else {
-          console.error(err)
-        }
+    fetch(`${API_ROOT}search/${text}`)
+      .then(res => res.text())
+      .then(newComics => {
+        newComics = JSON.parse(newComics).map(d => {
+          d.isSearchRes = true
+          return d
+        })
+        this.setState({ searchResult: newComics })
       })
+      .catch(err => console.log(err))
   }
 
   render() {
