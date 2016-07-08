@@ -9,6 +9,4 @@ This is my first React-native application. But, to me, it turns out: using React
 
 
 ## To be done
- - Search bar.
- - Comments.
  - Show full size image after touch comic.
